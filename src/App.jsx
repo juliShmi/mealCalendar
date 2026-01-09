@@ -1,15 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './components/HomePage.jsx';
-import RecipeList from './components/RecipeList.jsx';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Recipes from './components/Recipes';
+
 function App() {
   return (
-    <Router>
+    <>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/recipes" element={<RecipeList />} />
+        <Route path="/" element={<Navigate to="/recipes" />} />
+        <Route path="/recipes/*" element={<Recipes />} />
       </Routes>
-    </Router>
+    </>
   );
-  
 }
+
 export default App;
