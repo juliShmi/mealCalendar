@@ -5,14 +5,17 @@ import RecipeForm from './RecipeForm';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
+  const [categories, setCategories] = useState(["Meat","Fish / Seafood","Pasta","Soups","Salads","Snacks / Sandwiches","Desserts / Sweets","Vegetarian / Vegan","Breakfast","Lunch","Dinner","Snack","Dessert","Italian","French","Asian / Chinese / Japanese","Mexican","Home / Traditional"]);
 
   const addRecipe = (recipe) => {
     setRecipes(prev => [...prev, recipe]);
   };
 
+  const addCategory = (category) => setCategories(prev => [...prev, category]);
+
   return (
     <div>
-      {/* Кнопки навигации */}
+      {/* navigation */}
       <div style={{ marginBottom: '20px' }}>
         <Link to="/recipes">
           <button>My Recipes</button>
@@ -22,10 +25,10 @@ function Recipes() {
         </Link>
       </div>
 
-      {/* Вложенные маршруты */}
+      {/* nested routes */}
       <Routes>
-        <Route index element={<RecipeList recipes={recipes} />} />
-        <Route path="new" element={<RecipeForm onCreate={addRecipe} />} />
+        <Route index element={<RecipeList recipes={recipes} categories={categories} />} />
+        <Route path="new" element={<RecipeForm onCreate={addRecipe} categories={categories} onAddCategory={addCategory} />} />
       </Routes>
     </div>
   );

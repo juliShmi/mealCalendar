@@ -1,11 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function RecipeForm({ onCreate }) {
+function RecipeForm({ onCreate, categories, onAddCategory }) {
     const [name, setName] = useState('');
     const [time, setTime] = useState('');
     const [ingredients, setIngredients] = useState(['']);
     const navigate = useNavigate();
+    const [category, setCategory] = useState(categories[0] || '');
+    const [newCategory, setNewCategory] = useState('');
+
+    const handleAddCategory = () => {
+      if (newCategory.trim() && !categories.includes(newCategory)) {
+        onAddCategory(newCategory.trim());
+        setCategory(newCategory.trim());
+        setNewCategory('');
+      }
+    };
   
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -15,6 +25,7 @@ function RecipeForm({ onCreate }) {
         name,
         ingredients: ingredients.filter(i => i.trim() !== ''),
         time: Number(time),
+        category
       });
   
     onCreate(newRecipe);
@@ -57,6 +68,19 @@ function RecipeForm({ onCreate }) {
         ))}
         </div>
         <button type="button" onClick={addIngredient}>+</button>
+      </div>
+      <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        {categories.map((cat, idx) => (
+          <option key={idx} value={cat}>{cat}</option>
+        ))}
+      </select>
+      <div>
+        <input
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          placeholder="Add new category"
+        />
+        <button type="button" onClick={handleAddCategory}>+</button>
       </div>
         <button type="submit">Create</button>
       </form>
