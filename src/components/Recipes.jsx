@@ -5,8 +5,8 @@ import RecipeForm from './RecipeForm';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
-  const [categories, setCategories] = useState(["Meat","Fish / Seafood","Pasta","Soups","Salads","Snacks / Sandwiches","Desserts / Sweets","Vegetarian / Vegan","Breakfast","Lunch","Dinner","Snack","Dessert","Italian","French","Asian / Chinese / Japanese","Mexican","Home / Traditional"]);
-  
+  const [categories, setCategories] = useState(["Meat", "Fish / Seafood", "Pasta", "Soups", "Salads", "Snacks / Sandwiches", "Desserts / Sweets", "Vegetarian / Vegan", "Breakfast", "Lunch", "Dinner", "Snack", "Dessert", "Italian", "French", "Asian / Chinese / Japanese", "Mexican", "Home / Traditional"]);
+
   const deleteRecipe = (id) => setRecipes(prev => prev.filter(r => r.id !== id));
 
   const addRecipe = (recipe) => {
@@ -18,7 +18,7 @@ function Recipes() {
       prev.map(r => r.id === updatedRecipe.id ? updatedRecipe : r)
     );
   };
-  
+
   const addCategory = (category) => setCategories(prev => [...prev, category]);
 
   return (
@@ -35,35 +35,35 @@ function Recipes() {
 
       {/* nested routes */}
       <Routes>
-  <Route index element={
-    <RecipeList 
-      recipes={recipes}
-      categories={categories}
-      onDelete={deleteRecipe}
-    />
-  } />
+        <Route index element={
+          <RecipeList
+            recipes={recipes}
+            categories={categories}
+            onDelete={deleteRecipe}
+          />
+        } />
 
-  <Route
-    path="new"
-    element={
-      <RecipeForm
-        onCreate={addRecipe}
-        categories={categories}
-      />
-    }
-  />
+        <Route
+          path="new"
+          element={
+            <RecipeForm
+              onCreate={addRecipe}
+              categories={categories}
+            />
+          }
+        />
 
-  <Route
-    path="edit/:id"
-    element={
-      <RecipeForm
-        recipes={recipes}
-        onUpdate={updateRecipe}
-        categories={categories}
-      />
-    }
-  />
-</Routes>
+        <Route
+          path="edit/:id"
+          element={
+            <RecipeForm
+              recipes={recipes}
+              onUpdate={updateRecipe}
+              categories={categories}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }

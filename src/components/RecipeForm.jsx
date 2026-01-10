@@ -1,91 +1,93 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function RecipeForm({ onCreate, onUpdate, categories, onAddCategory, recipes }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
 
-    const [name, setName] = useState('');
-    const [time, setTime] = useState('');
-    const [ingredients, setIngredients] = useState(['']);
-    const [category, setCategory] = useState(categories[0] || '');
-    const [newCategory, setNewCategory] = useState('');
+  const [name, setName] = useState('');
+  const [time, setTime] = useState('');
+  const [ingredients, setIngredients] = useState(['']);
+  const [category, setCategory] = useState(categories[0] || '');
+  const [newCategory, setNewCategory] = useState('');
 
-    const handleAddCategory = () => {
-      if (newCategory.trim() && !categories.includes(newCategory)) {
-        onAddCategory(newCategory.trim());
-        setCategory(newCategory.trim());
-        setNewCategory('');
-      }
-    };
-
-    const recipeToEdit = recipes?.find(r => r.id === Number(id));
-
-useEffect(() => {
-  if (isEdit && recipeToEdit) {
-    setName(recipeToEdit.name);
-    setTime(recipeToEdit.time);
-    setIngredients(recipeToEdit.ingredients);
-    setCategory(recipeToEdit.category);
-  }
-}, [isEdit, recipeToEdit]);
-  
-const handleSubmit = (e) => {
-  e.preventDefault();
-
-  const recipe = {
-    id: isEdit ? recipeToEdit.id : Date.now(),
-    name,
-    ingredients: ingredients.filter(i => i.trim() !== ''),
-    time: Number(time),
-    category,
+  const handleAddCategory = () => {
+    if (newCategory.trim() && !categories.includes(newCategory)) {
+      onAddCategory(newCategory.trim());
+      setCategory(newCategory.trim());
+      setNewCategory('');
+    }
   };
 
-  if (isEdit) {
-    onUpdate(recipe);
-  } else {
-    onCreate(recipe);
-    resetForm();
-  }
+  const recipeToEdit = recipes?.find(r => r.id === Number(id));
 
-  navigate('/recipes');
-};
+  useEffect(() => {
+    if (isEdit && recipeToEdit) {
+      setName(recipeToEdit.name);
+      setTime(recipeToEdit.time);
+      setIngredients(recipeToEdit.ingredients);
+      setCategory(recipeToEdit.category);
+    }
+  }, [isEdit, recipeToEdit]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const resetForm = () => {
-      setName('');
-      setTime('');
-      setIngredients(['']);
+    const recipe = {
+      id: isEdit ? recipeToEdit.id : uuidv4(),
+      name,
+      ingredients: ingredients.filter(i => i.trim() !== ''),
+      time: Number(time),
+      category,
     };
 
-    const addIngredient = () => {
-      setIngredients([...ingredients, '']);
-    };
+    if (isEdit) {
+      onUpdate(recipe);
+    } else {
+      onCreate(recipe);
+      resetForm();
+    }
 
-    const handleIngredientChange = (index, value) => {
-      const newIngredients = [...ingredients];
-      newIngredients[index] = value;
-      setIngredients(newIngredients);
-    };
+    navigate('/recipes');
+  };
 
-    return (
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Recipe Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <input type="number" placeholder="Time" value={time} onChange={(e) => setTime(e.target.value)} />
-        
+
+  const resetForm = () => {
+    setName('');
+    setTime('');
+    setIngredients(['']);
+  };
+
+  const addIngredient = () => {
+    setIngredients([...ingredients, '']);
+  };
+
+  const handleIngredientChange = (index, value) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = value;
+    setIngredients(newIngredients);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" placeholder="Recipe Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="number" placeholder="Time" value={time} onChange={(e) => setTime(e.target.value)} />
+
       <div style={{ marginTop: '10px' }}>
         <p>Ingredients:</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxWidth: '300px' }}>
-        {ingredients.map((ing, index) => (
-          <input
-            key={index}
-            type="text"
-            placeholder={`Ingredient ${index + 1}`}
-            value={ing}
-            onChange={(e) => handleIngredientChange(index, e.target.value)}
-          />
-        ))}
+          {ingredients.map((ing, index) => (
+            <input
+              key={index}
+              type="text"
+              placeholder={`Ingredient ${index + 1}`}
+              value={ing}
+              onChange={(e) => handleIngredientChange(index, e.target.value)}
+            />
+          ))}
         </div>
         <button type="button" onClick={addIngredient}>+</button>
       </div>
@@ -103,10 +105,10 @@ const handleSubmit = (e) => {
         <button type="button" onClick={handleAddCategory}>+</button>
       </div>
       <button type="submit">
-  {isEdit ? 'Save changes' : 'Create'}
-</button>
-      </form>
-    );
-  }
+        {isEdit ? 'Save changes' : 'Create'}
+      </button>
+    </form>
+  );
+}
 
 export default RecipeForm;
