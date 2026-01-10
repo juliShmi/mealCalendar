@@ -13,6 +13,12 @@ function Recipes() {
     setRecipes(prev => [...prev, recipe]);
   };
 
+  const updateRecipe = (updatedRecipe) => {
+    setRecipes(prev =>
+      prev.map(r => r.id === updatedRecipe.id ? updatedRecipe : r)
+    );
+  };
+  
   const addCategory = (category) => setCategories(prev => [...prev, category]);
 
   return (
@@ -29,9 +35,35 @@ function Recipes() {
 
       {/* nested routes */}
       <Routes>
-        <Route index element={<RecipeList recipes={recipes} categories={categories} onDelete={deleteRecipe}/>} />
-        <Route path="new" element={<RecipeForm onCreate={addRecipe} categories={categories} onAddCategory={addCategory} />} />
-      </Routes>
+  <Route index element={
+    <RecipeList 
+      recipes={recipes}
+      categories={categories}
+      onDelete={deleteRecipe}
+    />
+  } />
+
+  <Route
+    path="new"
+    element={
+      <RecipeForm
+        onCreate={addRecipe}
+        categories={categories}
+      />
+    }
+  />
+
+  <Route
+    path="edit/:id"
+    element={
+      <RecipeForm
+        recipes={recipes}
+        onUpdate={updateRecipe}
+        categories={categories}
+      />
+    }
+  />
+</Routes>
     </div>
   );
 }

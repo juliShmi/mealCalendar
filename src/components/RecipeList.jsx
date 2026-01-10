@@ -1,6 +1,9 @@
 import RecipeCard from './RecipeCard';
+import { useNavigate } from 'react-router-dom';
+
 
 function RecipeList({ recipes, categories, onDelete }) {
+  const navigate = useNavigate();
   return (
     <div>
       <h1>My Recipes</h1>
@@ -20,6 +23,9 @@ function RecipeList({ recipes, categories, onDelete }) {
                     time={r.time} 
                     ingredients={r.ingredients} 
                   />
+                  <button onClick={() => navigate(`/recipes/edit/${r.id}`)}>
+                  ✏️
+                </button>
                   <button 
                     onClick={() => onDelete(r.id)} 
                     style={{ marginLeft: '10px', height: '30px' }}

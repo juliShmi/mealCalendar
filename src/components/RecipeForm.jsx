@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function RecipeForm({ onCreate, categories, onAddCategory }) {
+function RecipeForm({ onCreate, onUpdate, categories, onAddCategory, recipes }) {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEdit = Boolean(id);
+
     const [name, setName] = useState('');
     const [time, setTime] = useState('');
     const [ingredients, setIngredients] = useState(['']);
-    const navigate = useNavigate();
     const [category, setCategory] = useState(categories[0] || '');
     const [newCategory, setNewCategory] = useState('');
 
@@ -16,22 +19,39 @@ function RecipeForm({ onCreate, categories, onAddCategory }) {
         setNewCategory('');
       }
     };
+
+    const recipeToEdit = recipes?.find(r => r.id === Number(id));
+
+useEffect(() => {
+  if (isEdit && recipeToEdit) {
+    setName(recipeToEdit.name);
+    setTime(recipeToEdit.time);
+    setIngredients(recipeToEdit.ingredients);
+    setCategory(recipeToEdit.category);
+  }
+}, [isEdit, recipeToEdit]);
   
-    const handleSubmit = (e) => {
-      e.preventDefault();
-  
-      const newRecipe = ({
-        id: Date.now(),
-        name,
-        ingredients: ingredients.filter(i => i.trim() !== ''),
-        time: Number(time),
-        category
-      });
-  
-    onCreate(newRecipe);
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  const recipe = {
+    id: isEdit ? recipeToEdit.id : Date.now(),
+    name,
+    ingredients: ingredients.filter(i => i.trim() !== ''),
+    time: Number(time),
+    category,
+  };
+
+  if (isEdit) {
+    onUpdate(recipe);
+  } else {
+    onCreate(recipe);
     resetForm();
-    navigate('/recipes');
-    };
+  }
+
+  navigate('/recipes');
+};
+
 
     const resetForm = () => {
       setName('');
@@ -82,7 +102,9 @@ function RecipeForm({ onCreate, categories, onAddCategory }) {
         />
         <button type="button" onClick={handleAddCategory}>+</button>
       </div>
-        <button type="submit">Create</button>
+      <button type="submit">
+  {isEdit ? 'Save changes' : 'Create'}
+</button>
       </form>
     );
   }
